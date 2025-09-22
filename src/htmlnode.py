@@ -9,11 +9,12 @@ class HTMLNode:
         raise NotImplementedError("missing")
     
     def props_to_html(self):
-        return_string = " "
-        for att in self.props:
-            return_string = return_string + att + "=" + self.props[att] + " "
+        return_string = ""
+        if self.props is not None:
+            for att in self.props:
+                return_string = return_string + " " + att + '="' + self.props[att] + '"'
         return return_string
-    
+
     def __eq__(node1, node2):
         return node1.tag == node2.tag and node1.value == node2.value and node1.children == node2.children and node1.props == node2.props
 

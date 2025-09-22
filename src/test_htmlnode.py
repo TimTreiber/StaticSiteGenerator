@@ -11,6 +11,7 @@ class TestTextNode(unittest.TestCase):
         node3 = HTMLNode("p", "some text", [], {"href": "https://www.google.com"})
         node4 = HTMLNode("p", "some text", [test_node], {"href": "https://www.google.com"})
         node5 = HTMLNode("p", "some text", [test_node], {"href": "https://www.google.com"})
+        #print(node5.props_to_html())
         self.assertEqual(node, node2)
         self.assertNotEqual(node, node3)
         self.assertNotEqual(node, node4)
