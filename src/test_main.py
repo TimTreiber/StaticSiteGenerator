@@ -3,7 +3,7 @@ import unittest
 from textnode import TextNode
 from textnode import TextType
 from htmlnode import HTMLNode
-from main import *
+from conversions import *
 
 class TestTextNode(unittest.TestCase):
     def test_to_html(self):
@@ -89,5 +89,56 @@ class TestTextNode(unittest.TestCase):
         result,
         )
         
+    def test_markdown_to_blocks(self):
+        md = """
+### Heading1
+
+Not a heading ### xoxo
+
+## But this is a **bold** heading ### xoxo
+
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is an unordered list
+- with items
+
+1. This is an ordered list
+2. with items
+
+1. This is not an ordered list
+3. with items
+2. and with items
+
+> This is a quote block
+
+```
+And lastly a code block
+```
+"""
+        blocks = markdown_to_blocks(md)
+        result = []
+        for block in blocks:
+            type = block_to_blocktype(block)
+            result.append(type)
+        solution = [
+            BlockType.HEADING,
+            BlockType.PARAGRAPH,
+            BlockType.HEADING,
+            BlockType.PARAGRAPH,
+            BlockType.PARAGRAPH,
+            BlockType.UNORDERED_LIST,
+            BlockType.ORDERED_LIST,
+            BlockType.PARAGRAPH,
+            BlockType.QUOTE,
+            BlockType.CODE,
+        ]
+        self.assertListEqual(
+            result,
+            solution,
+        )
+
 if __name__ == "__main__":
     unittest.main()
