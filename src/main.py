@@ -4,10 +4,10 @@ import shutil
 import sys
 
 def main():
-    basepath = "/"
-    if sys.argv[1]:
+    basepath = "/home/timtreiber/GitHub/StaticSiteGenerator"
+    if len(sys.argv) > 1 and sys.argv[1]:
         basepath = sys.argv[1]
-    static_to_public()
+    static_to_public(basepath)
     #pwd = "/home/timtreiber/GitHub/StaticSiteGenerator"
     generate_pages_recursive(f"{basepath}/content", f"{basepath}/template.html", f"{basepath}/public")
 
@@ -33,8 +33,8 @@ def generate_page(from_path, template_path, dest_path):
     title = extract_title(md_contents)
     template_contents = template_contents.replace('{{ Title }}', title)
     template_contents = template_contents.replace('{{ Content }}', html)
-    template_contents = template_contents.replace('href="/', f'href="{from_path}')
-    template_contents = template_contents.replace('src="/', f'src="{from_path}')
+    #template_contents = template_contents.replace('href="/', f'href="{from_path}')
+    #template_contents = template_contents.replace('src="/', f'src="{from_path}')
     if not os.path.exists(dest_path):
         os.makedirs(dest_path)
     with open(f"{dest_path}/index.html", mode = 'x') as d:
