@@ -1,15 +1,19 @@
 from conversions import *
 import os
 import shutil
+import sys
 
 def main():
+    basepath = "/"
+    if sys.argv[1]:
+        basepath = sys.argv[1]
     static_to_public()
-    pwd = "/home/timtreiber/GitHub/StaticSiteGenerator"
-    generate_pages_recursive(f"{pwd}/content", f"{pwd}/template.html", f"{pwd}/public")
+    #pwd = "/home/timtreiber/GitHub/StaticSiteGenerator"
+    generate_pages_recursive(f"{basepath}/content", f"{basepath}/template.html", f"{basepath}/public")
 
-def static_to_public():
-    shutil.rmtree("/home/timtreiber/GitHub/StaticSiteGenerator/public")
-    shutil.copytree("/home/timtreiber/GitHub/StaticSiteGenerator/static/", "/home/timtreiber/GitHub/StaticSiteGenerator/public")
+def static_to_public(pwd):
+    shutil.rmtree(f"{pwd}/public")
+    shutil.copytree(f"{pwd}/static", f"{pwd}/public")
 
 def extract_title(markdown):
     lines = (markdown.strip()).split("\n")
@@ -29,6 +33,8 @@ def generate_page(from_path, template_path, dest_path):
     title = extract_title(md_contents)
     template_contents = template_contents.replace('{{ Title }}', title)
     template_contents = template_contents.replace('{{ Content }}', html)
+    template_contents = template_contents.replace('href="/', f'href="{from_path}')
+    template_contents = template_contents.replace('src="/', f'src="{from_path}')
     if not os.path.exists(dest_path):
         os.makedirs(dest_path)
     with open(f"{dest_path}/index.html", mode = 'x') as d:
