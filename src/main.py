@@ -4,16 +4,16 @@ import shutil
 import sys
 
 def main():
-    basepath = "/home/timtreiber/GitHub/StaticSiteGenerator/"
-    if len(sys.argv) > 1 and sys.argv[1]:
-        basepath = sys.argv[1]
-    static_to_public()
+    #basepath = "/home/timtreiber/GitHub/StaticSiteGenerator/"
+    #if len(sys.argv) > 1 and sys.argv[1]:
+    #    basepath = sys.argv[1]
+    #static_to_public()
     #pwd = "/home/timtreiber/GitHub/StaticSiteGenerator/"
     #generate_pages_recursive(f"{pwd}content", f"{pwd}template.html", f"{pwd}docs", basepath)
 
-def static_to_public():
-    shutil.rmtree("/home/timtreiber/GitHub/StaticSiteGenerator/docs")
-    shutil.copytree("/home/timtreiber/GitHub/StaticSiteGenerator/static", "/home/timtreiber/GitHub/StaticSiteGenerator/docs")
+#def static_to_public():
+#    shutil.rmtree("/home/timtreiber/GitHub/StaticSiteGenerator/docs")
+#    shutil.copytree("/home/timtreiber/GitHub/StaticSiteGenerator/static", "/home/timtreiber/GitHub/StaticSiteGenerator/docs")
 
 def extract_title(markdown):
     lines = (markdown.strip()).split("\n")
