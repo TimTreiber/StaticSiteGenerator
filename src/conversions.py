@@ -1,6 +1,7 @@
 from textnode import TextNode
 from textnode import TextType
 from leafnode import LeafNode
+from parentnode import ParentNode
 import re
 from enum import Enum
 
@@ -137,7 +138,60 @@ def block_to_blocktype(block):
             return BlockType.ORDERED_LIST
     return BlockType.PARAGRAPH
 
+def convert_code_block(block):
+    new_text = (block.removeprefix("```\n")).removesuffix("```")
+    leaf = LeafNode("code", new_text)
+    return ParentNode("pre", [leaf])
+
+def header_count(block):
+    count = 0
+    while block[count] == "#":
+        count += 1
+    return count
+
+def text_to_children(text):
+    text = ' '.join(text.splitlines())
+    textnodes = text_to_textnodes(text)
+    result = []
+    for node in textnodes:
+        result.append(text_node_to_html_node(node))
+    return result
+
+def convert_list(block, unordered):
+    parent_list = []
+    lines = block.split("\n")
+    for line in lines:
+        if unordered:
+            line = line.removeprefix("- ")
+            text = line
+        else:
+            number, text = line.split(". ")
+        children = text_to_children(text)
+        parent_list.append(ParentNode("li", children))
+    if unordered:
+        return ParentNode("ul", parent_list)
+    else:
+        return ParentNode("ol", parent_list)
+
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
+    block_list = []
     for block in blocks:
         block_type = block_to_blocktype(block)
+        if block_type == BlockType.CODE:
+            block_list.append(convert_code_block(block))
+        elif block_type == BlockType.HEADING:
+            count = header_count(block)
+            block = block.lstrip("# ")
+            block_list.append(ParentNode(f"h{count}",text_to_children(block)))
+        elif block_type == BlockType.PARAGRAPH:
+            block_list.append(ParentNode("p",text_to_children(block)))
+        elif block_type == BlockType.QUOTE:
+            block = block.replace("> ", "")
+            block = block.replace(">", "")
+            block_list.append(ParentNode("blockquote",text_to_children(block)))
+        elif block_type == BlockType.UNORDERED_LIST:
+            block_list.append(convert_list(block, True))
+        elif block_type == BlockType.ORDERED_LIST:
+            block_list.append(convert_list(block, False))
+    return ParentNode("div", block_list)
